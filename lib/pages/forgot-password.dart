@@ -1,18 +1,51 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:get/get.dart';
 import 'package:ricmobile/custom/snackbar.dart';
 
-import '../custom/text-field.dart';
-
-class ForgotPassword extends StatelessWidget {
+class ForgotPassword extends StatefulWidget {
   ForgotPassword({super.key});
+
+  @override
+  State<ForgotPassword> createState() => _ForgotPasswordState();
+}
+
+class _ForgotPasswordState extends State<ForgotPassword> {
   Flushbar flushbar = Flushbar();
+  final _emailcontrol = TextEditingController();
+  void dispose() {
+    _emailcontrol.dispose();
+    super.dispose();
+  }
+
+  Future passwordreset() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailcontrol.text.trim());
+      show(
+          context,
+          CustomSnackbar(
+            messageText: 'Successfully email sent',
+            context: context,
+            color: Colors.greenAccent,
+          ).topSnackbar());
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      show(
+          context,
+          CustomSnackbar(
+            messageText: ' Enter valid Email',
+            context: context,
+            color: Colors.redAccent,
+          ).topSnackbar());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
     final size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Color(0xff0E243A),
@@ -41,27 +74,40 @@ class ForgotPassword extends StatelessWidget {
                             SizedBox(
                               height: 10,
                             ),
-                            for (int i = 0; i < CustomTextField.length; i++)
-                              CustomTextField(
-                                      text: 'Email ID',
-                                      hinttext: 'Enter email ID',
-                                      lines: 1,
-                                      textColor: Colors.black,
-                                      textFieldColor: Colors.grey,
-                                      borderColor: Colors.black26,
-                                      fontSize: 16)
-                                  .textField()[i],
+                            Text(
+                              'Email',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  height: 1.5,
+                                  color: Colors.black),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            TextField(
+                              controller: _emailcontrol,
+                              decoration: InputDecoration(
+                                hintStyle: TextStyle(color: Colors.grey),
+                                hintText: 'Enter Email',
+                                border: OutlineInputBorder(),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.black26)),
+                              ),
+                            ),
                             SizedBox(
                               height: 25,
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                show(
-                                    context,
-                                    CustomSnackbar(
-                                      messageText: 'Successfully email sent',
-                                      context: context,
-                                    ).topSnackbar());
+                                passwordreset();
+                                // show(
+                                //     context,
+                                //     CustomSnackbar(
+                                //       messageText: 'Successfully email sent',
+                                //       context: context,
+                                //     ).topSnackbar());
                               },
                               child: Container(
                                   padding: EdgeInsets.all(12),

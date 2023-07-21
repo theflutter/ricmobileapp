@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
-import 'package:get/get.dart';
 
 class CustomSnackbar {
+  var color;
+
   CustomSnackbar({
     required this.messageText,
     required this.context,
+    required this.color,
   });
   BuildContext context;
   String messageText;
+
   Flushbar topSnackbar() => Flushbar(
         dismissDirection: FlushbarDismissDirection.HORIZONTAL,
         duration: Duration(seconds: 3),
@@ -34,6 +37,6 @@ class CustomSnackbar {
             ),
           ],
         ),
-        backgroundColor: Color(0xff19BC9B),
+        backgroundColor: color,
       );
 }

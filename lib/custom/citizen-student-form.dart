@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flushbar/flutter_flushbar.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:ricmobile/constants/constants.dart';
 import 'package:ricmobile/controller/controller.dart';
+import 'package:ricmobile/custom/snackbar.dart';
 import 'package:ricmobile/services/firebase_services.dart';
 
 class CustomForm extends StatefulWidget {
@@ -17,6 +21,7 @@ class CustomForm extends StatefulWidget {
 }
 
 class _CustomFormState extends State<CustomForm> {
+  Flushbar flushbar = Flushbar();
   FirebaseService? _firebaseService;
   final _formKey = GlobalKey<FormState>();
 
@@ -38,6 +43,7 @@ class _CustomFormState extends State<CustomForm> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 30),
       width: double.infinity,
       height: double.infinity,
       alignment: Alignment.center,
@@ -59,7 +65,6 @@ class _CustomFormState extends State<CustomForm> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // ...existing code...
                             Image.asset(
                               'assets/images/logo-white.png',
                               width: double.infinity,
@@ -96,17 +101,15 @@ class _CustomFormState extends State<CustomForm> {
                             TextFormField(
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: 'Name',
+                                hintText: 'Enter Name',
                                 border: OutlineInputBorder(),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.black26)),
                               ),
-                              // ...input decoration...
-
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter an email';
+                                  return 'Please enter name';
                                 }
                                 if (value.length < 4) {
                                   return 'Password must be at least 6 characters';
@@ -117,8 +120,6 @@ class _CustomFormState extends State<CustomForm> {
                                 _name = value!;
                               },
                             ),
-
-                            // ...existing code...
                             SizedBox(
                               height: 10,
                             ),
@@ -135,7 +136,7 @@ class _CustomFormState extends State<CustomForm> {
                             TextFormField(
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: 'Username',
+                                hintText: 'Enter Username',
                                 border: OutlineInputBorder(),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide:
@@ -143,10 +144,10 @@ class _CustomFormState extends State<CustomForm> {
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter an email';
+                                  return 'Please enter an username';
                                 }
                                 if (value.length < 5) {
-                                  return 'Please enter a valid email';
+                                  return 'Please enter a valid username';
                                 }
                                 return null;
                               },
@@ -171,14 +172,13 @@ class _CustomFormState extends State<CustomForm> {
                             TextFormField(
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: Colors.grey),
-                                hintText: 'Email',
+                                hintText: 'Enter your Email',
                                 border: OutlineInputBorder(),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide:
                                         BorderSide(color: Colors.black26)),
                               ),
                               validator: (value) {
-                                // ignore: no_leading_underscores_for_local_identifiers
                                 bool _result = value!.contains(
                                   RegExp(
                                       r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"),
@@ -191,6 +191,11 @@ class _CustomFormState extends State<CustomForm> {
                                 _email = value!;
                               },
                             ),
+
+                            SizedBox(
+                              width: 10,
+                            ),
+
                             SizedBox(
                               height: 10,
                             ),
@@ -267,35 +272,53 @@ class _CustomFormState extends State<CustomForm> {
                             SizedBox(
                               height: 10,
                             ),
-                            IntlPhoneField(
-                              decoration: InputDecoration(
-                                // ...input decoration...
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: IntlPhoneField(
+                                    initialCountryCode: "IN",
+                                    decoration: InputDecoration(
+                                      // ...input decoration...
 
-                                hintStyle: TextStyle(color: Colors.grey),
-                                hintText: 'Enter Mobile Number',
-                                border: OutlineInputBorder(),
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                      hintText: 'Enter Mobile Number',
+                                      border: OutlineInputBorder(),
 
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black26)),
-                              ),
-                              // validator: (value) {
-                              //   if (value!.isEmpty) {
-                              //     return 'Please enter a mobile number';
-                              //   }
-                              //   if (value.length != 10) {
-                              //     return 'Mobile number must be 10 digits';
-                              //   }
-                              //   return null;
-                              // },
-                              // onSaved: (value) {
-                              //   _mobileNumber = value!;
-                              // },
-                              keyboardType: TextInputType.phone,
-                              initialCountryCode: 'US',
-                              onChanged: (PhoneNumber phoneNumber) {
-                                _mobileNumber = phoneNumber.completeNumber;
-                              },
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.black26),
+                                      ),
+                                    ),
+                                    // validator: (value) {
+                                    //   if (value!.isEmpty) {
+                                    //     return 'Please enter a mobile number';
+                                    //   }
+                                    //   if (value.length != 10) {
+                                    //     return 'Mobile number must be 10 digits';
+                                    //   }
+                                    //   return null;
+                                    // },
+                                    // onSaved: (value) {
+                                    //   _mobileNumber = value!;
+                                    // },
+                                    keyboardType: TextInputType.phone,
+                                    onChanged: (PhoneNumber phoneNumber) {
+                                      _mobileNumber =
+                                          phoneNumber.completeNumber;
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  child: Text('OTP'),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: primaryColor),
+                                ),
+                              ],
                             ),
 
                             // ...existing code...
@@ -417,7 +440,39 @@ class _CustomFormState extends State<CustomForm> {
       }
     }
   }
+
+  Future emailverification() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
+      show(
+          context,
+          CustomSnackbar(
+            messageText: '',
+            context: context,
+            color: Colors.greenAccent,
+          ).topSnackbar());
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      show(
+          context,
+          CustomSnackbar(
+            messageText: ' Enter valid Email',
+            context: context,
+            color: Colors.redAccent,
+          ).topSnackbar());
+    }
+  }
+
+  Future show(BuildContext context, Flushbar newFlushbar) async {
+    Future.wait([flushbar.dismiss()]);
+    newFlushbar.show(context);
+    flushbar = newFlushbar;
+  }
 }
+    
+
+
+
 
   // Perform further actions with the form data
   // e.g., send data to the server, navigate to another screen

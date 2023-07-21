@@ -1,12 +1,12 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flushbar/flutter_flushbar.dart';
+import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:ricmobile/controller/controller.dart';
 import 'package:ricmobile/custom/appbar.dart';
 import 'package:ricmobile/custom/drawerTest.dart';
-import 'package:get/get.dart';
 import 'package:ricmobile/custom/snackbar.dart';
 import 'package:ricmobile/data/drawer-items.dart';
 import 'package:ricmobile/data/profile.dart';
@@ -312,6 +312,7 @@ class _DashboardState extends State<Dashboard> {
                                                 messageText:
                                                     'File Upload Succesfully',
                                                 context: context,
+                                                color: Colors.greenAccent,
                                               ).topSnackbar());
                                         },
                                         child: CustomButton(

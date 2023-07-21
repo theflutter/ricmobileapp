@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ricmobile/login-page.dart';
 
 class CustomLogout {
   const CustomLogout({required this.context});
@@ -24,7 +26,9 @@ class CustomLogout {
               ),
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.to(LoginPage());
+                },
                 child: Text(
                   'Ok',
                   style: TextStyle(

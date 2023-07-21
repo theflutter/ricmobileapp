@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple CAPTCHA Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple CAPTCHA Example</h1>
+  <form id="captchaForm" onsubmit="return validateCaptcha()">
+    <p>Please enter the characters you see in the image:</p>
+    <img src="#" alt="CAPTCHA Image" id="captchaImage">
+    <input type="text" id="captchaInput" placeholder="Enter CAPTCHA here" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    // Function to generate a random CAPTCHA string
+    function generateCaptcha() {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let captcha = '';
+      for (let i = 0; i < 6; i++) {
+        captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return captcha;
+    }
+
+    // Function to update the CAPTCHA image
+    function updateCaptchaImage() {
+      const captchaImage = document.getElementById('captchaImage');
+      const captchaText = generateCaptcha();
+      captchaImage.src = 'https://via.placeholder.com/150?text=' + captchaText;
+      captchaImage.setAttribute('data-captcha', captchaText); // Store the captcha text as an attribute for validation later
+    }
+
+    // Function to validate the CAPTCHA input
+    function validateCaptcha() {
+      const captchaInput = document.getElementById('captchaInput');
+      const captchaImage = document.getElementById('captchaImage');
+
+      if (captchaInput.value === captchaImage.getAttribute('data-captcha')) {
+        alert('CAPTCHA is valid! Form submission successful.');
+        return true;
+      } else {
+        alert('Invalid CAPTCHA. Please try again.');
+        updateCaptchaImage(); // Generate a new CAPTCHA and update the image
+        captchaInput.value = ''; // Clear the input field
+        return false;
+      }
+    }
+
+    // Generate the initial CAPTCHA when the page loads
+    updateCaptchaImage();
+  </script>
+</body>
+</html>
